@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var posts = require('./routes/posts');
 
 var app = express();
 
@@ -22,8 +23,27 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+// MongoDB
+var mongoDB;
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://shoppic-db:shoppicDB1234@ds129386.mlab.com:29386/shoppic';
+MongoClient.connect(url, function(err, db) {
+    console.log("Connected correctly to server.");
+    db.collection('users').find();
+    mongoDB = db;
+});
+
+app.use(function (req, res, next) {
+  req.db = mongoDB;
+  next();
+});
+
+//console.log(init);
+
 app.use('/', index);
 app.use('/users', users);
+app.use('/posts', posts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,10 +1,14 @@
 var express = require('express');
 var router = express.Router();
-// var controller // für DB Connection
 
 // Route for all users
 router.route('/')
     .get(function (req, res) {
+        var collection = req.db.collection('users');
+        collection.find({}).toArray(function(err, docs){
+            console.log(docs);
+        });
+
         res.render('users', {user: 'all shoppic user'})
     })
     .post(function (req, res) {
